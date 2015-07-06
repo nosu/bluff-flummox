@@ -1,0 +1,28 @@
+{
+  "name": "bluff-flummox",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "babelify": "^6.1.2",
+    "browserify": "^10.2.4",
+    "flummox": "^3.5.2",
+    "gulp": "^3.9.0",
+    "gulp-notify": "^2.2.0",
+    "gulp-plumber": "^1.0.1",
+    "gulp-ruby-sass": "^1.0.5",
+    "immutable": "^3.7.4",
+    "react": "^0.13.3",
+    "reactify": "^1.1.1",
+    "vinyl-source-stream": "^1.1.0"
+  },
+  "dependencies": {
+    "flummox": "^3.5.2",
+    "react": "^0.13.3"
+  }
+}

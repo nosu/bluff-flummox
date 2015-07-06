@@ -1,0 +1,171 @@
+.clearfix:after {
+  content: "";
+  clear: both;
+  display: block;
+}
+
+body {
+  background-color: #efefee;
+  color: #766e65;
+}
+
+#bluff {
+  width: 100%;
+}
+
+.container {
+  width: 342px;
+  margin: 8px auto 0;
+}
+
+.board {
+  background-color: #bbada0;
+  border-radius: 4px;
+  padding: 4px 5px;
+  margin-bottom: 5px;
+}
+.board .board__cell {
+  display: table-cell;
+  background-color: #FFFFFF;
+  height: 80px;
+  width: 103.33333px;
+  border-right: solid 4px #bbada0;
+}
+.board .board__margin {
+  display: table-cell;
+  width: 20px;
+}
+.board .board__margin .board__margin__arrow {
+  position: relative;
+  top: 32px;
+  left: 4px;
+  width: 0;
+  height: 0;
+  border-top: 10px solid transparent;
+  border-right: 6px solid transparent;
+  border-bottom: 10px solid transparent;
+  border-left: 13px solid #FFFFFF;
+}
+
+.dice {
+  float: left;
+  width: 42px;
+  height: 42px;
+  text-align: center;
+  margin: 10px;
+  font-weight: bold;
+  font-size: 20px;
+  color: #766e65;
+  background-color: #eee4da;
+  border-radius: 4px;
+}
+.dice:before {
+  content: '';
+  display: inline-block;
+  height: 100%;
+  vertical-align: middle;
+  margin-right: -0.25em;
+}
+.dice__pips {
+  display: inline-block;
+  vertical-align: middle;
+  width: 42px;
+}
+.dice-small {
+  float: left;
+  width: 30px;
+  height: 30px;
+  margin: 8px;
+}
+.dice__pips-small {
+  width: 30px;
+}
+
+.otherPlayers {
+  margin: 5px 0;
+}
+
+.otherPlayer {
+  float: left;
+  width: 110px;
+  margin-right: 6px;
+  border-radius: 4px;
+  background-color: #bbada0;
+}
+.otherPlayer:last-of-type {
+  margin-right: 0px;
+}
+.otherPlayer .otherPlayer__name {
+  font-size: 16px;
+  font-weight: bold;
+  color: #FFFFFF;
+}
+
+.myPlayer {
+  background-color: #bbada0;
+  border-radius: 4px;
+  margin: 5px 0;
+}
+.myPlayer .myPlayer__name {
+  font-size: 18px;
+  font-weight: bold;
+  color: #FFFFFF;
+}
+
+.interface__bid {
+  width: 100%;
+  font-size: 18px;
+}
+.interface__bid__selectCell {
+  width: 100%;
+  margin: 5px 0;
+}
+.interface__bid__selectPips {
+  width: 100%;
+  margin: 5px 0;
+}
+
+.interface__bluff {
+  width: 100%;
+}
+
+.btn {
+  width: 100%;
+  margin: 5px 0;
+  padding: 6px 20px;
+  background: #F65E3B;
+  color: #FFFFFF;
+  border: none;
+  border-radius: 5px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  display: inline-block;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  outline: none;
+  position: relative;
+  box-shadow: 0 6px #ab3c3c;
+  -webkit-transition: none;
+  -moz-transition: none;
+  transition: none;
+}
+
+.btn:after {
+  content: '';
+  position: absolute;
+  z-index: -1;
+  -webkit-transition: all 0.3s;
+  -moz-transition: all 0.3s;
+  transition: all 0.3s;
+}
+
+.btn:hover {
+  box-shadow: 0 4px #ab3c3c;
+  top: 2px;
+}
+
+.btn:active {
+  box-shadow: 0 0 #ab3c3c;
+  top: 6px;
+}
