@@ -2,10 +2,15 @@ import { Actions } from 'flummox';
 
 class GameActions extends Actions {
 
-  callBid(newCellIdx, newBid) {
+  callBid(newCellIdx, newBidPips, newBidNum) {
+    console.log('callBid action called');
+    console.log('newCellIdx: ' + newCellIdx);
+    console.log('newBidPips: ' + newBidPips);
+    console.log('newBidNum: ' + newBidNum);
     return {
       newCellIdx: newCellIdx,
-      newBid: newBid,
+      newBidPips: newBidPips,
+      newBidNum: newBidNum,
     };
   }
 

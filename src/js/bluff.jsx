@@ -159,28 +159,32 @@ class Interface extends React.Component {
       newCellIdx: 0,
       newBidPips: props.curBid.get('p'),
       newBidNum: props.curBid.get('n'),
-      selectedValue: props.cells.get(props.curCellIdx + 1).get('p') + "_" + props.cells.get(props.curCellIdx).get('n'),
+      selectedCellValue: props.cells.get(props.curCellIdx + 1).get('p') + "_" + props.cells.get(props.curCellIdx + 1).get('n'),
+      selectedPipsValue: props.curBid.get('p'),
     };
   }
 
   onChangeSelectedCell(event){
-    console.log(event.target.selectedIndex);
-    console.log('cells: ' + this.props.cells);
+    console.log('selectedIndex: ' + event.target.selectedIndex);
+    // console.log('cells: ' + this.props.cells);
 
     // Update the pips list
     if(event.target.value.indexOf("num") == 0) {
-      this.setState({bidPipsList: "num"});
+      this.setState((state, props) => {bidPipsList: "num"});
+      this.setState((state, props) => {selectedPipsValue: '1'});
     } else {
-      this.setState({bidPipsList: "star"});
+      this.setState((state, props) => {bidPipsList: "star"});
+      this.setState((state, props) => {selectedPipsValue: '0'});
     }
 
     // Update newCellIdx
+    // selectedIndex starts from 1
     var selectedIndex = event.target.selectedIndex;
     this.setState((state, props) => ({
-      newCellIdx: selectedIndex + props.curCellIdx
+      newCellIdx: selectedIndex + props.curCellIdx + 1
     }));
     this.setState((state, props) => ({
-      selectedValue: props.cells.get(state.newCellIdx).get('p') + "_" + props.cells.get(state.newCellIdx).get('n')
+      selectedCellValue: props.cells.get(state.newCellIdx).get('p') + "_" + props.cells.get(state.newCellIdx).get('n')
     }));
 
     // Update newSelectedNum
@@ -193,18 +197,29 @@ class Interface extends React.Component {
 
   onChangeSelectedPips(event){
     // Update the selected pips
+    const newBidPips = event.target.value;
     if(event.target.value == '*') {
-      this.setState({newBidPips: "star"});
+      this.setState((state, props) => {newBidPips: "star"});
+      this.setState((state, props) => {selectedPipsValue: '0'});
     } else {
-      this.setState({newBidPips: event.target.value});
+      this.setState((state, props) => {newBidPips: newBidPips});
+      this.setState((state, props) => {selectedPipsValue: newBidPips});
     }
+  }
+
+  handleBidBtn() {
+    this.props.flux.getActions('game')
+      .callBid(this.state.newCellIdx, this.state.newBidPips, this.state.newBidNum);
+  }
+
+  handleBluffBtn() {
+    this.props.flux.getActions('game').callBluff();
   }
 
   render() {
     const { cells, curCellIdx, curBid, curPlayerIdx } = this.props;
+    const { selectedCellValue, selectedPipsValue, newCellIdx } = this.state;
     var that = this;
-    var newCellIdx = this.state.newCellIdx;
-    var selectedValue = this.state.selectedValue;
 
     // Create options which cell to move
     var cellOptions = cells.slice(curCellIdx + 1).map((cell, index) =>
@@ -214,7 +229,7 @@ class Interface extends React.Component {
     );
 
     // Create options; star or 1-5
-    var pipsOptionsStar = <option key='1' value='star'>*</option>;
+    var pipsOptionsStar = <option key='1' value='0'>*</option>;
     var pipsOptionsNum = List([1, 2, 3, 4, 5]).map(
       i => <option key={i} value={i}>{i}</option>
     );
@@ -223,19 +238,19 @@ class Interface extends React.Component {
     // Create buttons
     var bidBtn;
     var bluffBtn;
-    if (curPlayerIdx == 0) {
-      bidBtn   = <button className='btn' onClick={that.handleBidBtn}>Bid</button>;
-      bluffBtn = <button className='btn' onClick={that.handleBluffBtn}>Call Bluff!</button>;
-    } else {
-      bidBtn   = <button className='btn' onClick={that.handleBidBtn} disabled='disabled'>Bid</button>;
-      bluffBtn = <button className='btn' onClick={that.handleBluffBtn} disalbed='disabled'>Call Bluff!</button>;
-    }
+    // if (curPlayerIdx == 0) {
+      bidBtn   = <button className='btn' onClick={this.handleBidBtn.bind(this)}>Bid</button>;
+      bluffBtn = <button className='btn' onClick={this.handleBluffBtn.bind(this)}>Call Bluff!</button>;
+    // } else {
+      // bidBtn   = <button className='btn' onClick={that.handleBidBtn} disabled='disabled'>Bid</button>;
+      // bluffBtn = <button className='btn' onClick={that.handleBluffBtn} disalbed='disabled'>Call Bluff!</button>;
+    // }
 
     return (
       <div className='interface'>
         <div className='interface__bid'>
-          <select className='interface__bid__selectCell' value={selectedValue} onChange={this.onChangeSelectedCell.bind(this)}>{cellOptions}</select>
-          <select className='interface__bid__selectPips' onChange={this.onChangeSelectedPips.bind(this)}>{pipsOptions}</select>
+          <select className='interface__bid__selectCell' value={selectedCellValue} onChange={this.onChangeSelectedCell.bind(this)}>{cellOptions}</select>
+          <select className='interface__bid__selectPips' value={selectedPipsValue} onChange={this.onChangeSelectedPips.bind(this)}>{pipsOptions}</select>
           {bidBtn}
         </div>
         <div className='interface__bluff'>
