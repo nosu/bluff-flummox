@@ -13,40 +13,16 @@ class Bluff extends React.Component {
             cells: store.state.cells,
             curCellIdx: store.state.curCellIdx,
             curBid: store.state.curBid,
-          })
-        }}>
-          <Board />
-        </FluxComponent>
-        <FluxComponent connectToStores={{
-          game: store => ({
             players: store.state.players,
             isDiceOpen: store.state.isDiceOpen,
-          })
-        }}>
-          <OtherPlayers />
-        </FluxComponent>
-        <FluxComponent connectToStores={{
-          game: store => ({
-            players: store.state.players,
-          })
-        }}>
-          <MyPlayer />
-        </FluxComponent>
-        <FluxComponent connectToStores={{
-          game: store => ({
             message: store.state.message,
             curPlayerIdx: store.state.curPlayerIdx,
           })
         }}>
+          <Board />
+          <OtherPlayers />
+          <MyPlayer />
           <Outcome />
-        </FluxComponent>
-        <FluxComponent connectToStores={{
-          game: store => ({
-            cells: store.state.cells,
-            curCellIdx: store.state.curCellIdx,
-            curBid: store.state.curBid,
-          })
-        }}>
           <Interface />
         </FluxComponent>
       </div>
@@ -58,9 +34,10 @@ class Bluff extends React.Component {
 class Board extends React.Component {
 
   render() {
-    var that = this;
     const {cells, curCellIdx, curBid} = this.props;
-    var dice = <Dice pips={curBid.get('p')} />;
+    const dice = <Dice pips={curBid.get('p')} />;
+    // console.log('cells: ' + cells);
+    console.log('curCellIdx: ', curCellIdx);
 
     return (
       <div className='board'>
@@ -170,11 +147,15 @@ class Interface extends React.Component {
 
     // Update the pips list
     if(event.target.value.indexOf("num") == 0) {
-      this.setState((state, props) => {bidPipsList: "num"});
-      this.setState((state, props) => {selectedPipsValue: '1'});
+      this.setState((state, props) => ({
+        bidPipsList: "num",
+        selectedPipsValue: '1',
+      }));
     } else {
-      this.setState((state, props) => {bidPipsList: "star"});
-      this.setState((state, props) => {selectedPipsValue: '0'});
+      this.setState((state, props) => ({
+        bidPipsList: "star",
+        selectedPipsValue: '0',
+      }));
     }
 
     // Update newCellIdx
@@ -182,7 +163,9 @@ class Interface extends React.Component {
     var selectedIndex = event.target.selectedIndex;
     this.setState((state, props) => ({
       newCellIdx: selectedIndex + props.curCellIdx + 1
-    }));
+    }), function() {
+      console.log('newCellIdx updated to: ' + this.state.newCellIdx);
+    });
     this.setState((state, props) => ({
       selectedCellValue: props.cells.get(state.newCellIdx).get('p') + "_" + props.cells.get(state.newCellIdx).get('n')
     }));
@@ -190,7 +173,7 @@ class Interface extends React.Component {
     // Update newSelectedNum
     var newBidNum = parseInt(event.target.value.split('_')[1]);
     console.log('newBidNum will be updated to: ' + parseInt(event.target.value.split('_')[1]));
-    this.setState({newBidNum: newBidNum}, function() {
+    this.setState((state, props) => ({newBidNum: newBidNum}), function() {
       console.log('newBidNum was updated to: ' + this.state.newBidNum);
     }.bind(this));
   }
@@ -266,7 +249,7 @@ class Outcome extends React.Component {
   render() {
     const { curPlayerIdx, message } = this.props;
     return (
-      <div>Turn: Player {curPlayerIdx}</div>
+      <div>{message}</div>
     );
   }
 

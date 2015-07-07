@@ -36,20 +36,22 @@ class GameStore extends Store {
     };
   }
 
-  handleBid(newCellIdx, newBidPips, newBidNum) {
+  handleBid(args) {
+    const { newCellIdx, newBidPips, newBidNum } = args;
+    const nextPlayerIdx = 1;
+    var that = this;
+    // console.log('store newCellIdx: ', newCellIdx);
     this.setState((state, props) => ({
       curCellIdx: newCellIdx,
       curBid: Map({p: newBidPips, n: newBidNum}),
+      curPlayerIdx: nextPlayerIdx,
     }));
+    console.log('Go to other player turns');
+    setTimeout(function(){this.cpuPlayTurn(nextPlayerIdx);}.bind(this), 1000);
   }
 
   cpuPlayTurn(playerIdx) {
-    if(playerIdx >= 4) {
-      this.setState((state, props) => ({
-        playerIdx: 0,
-      }));
-      return true;
-    }
+    console.log('Player ' + playerIdx + ' turn start.');
     const { curCellIdx, players } = this.state;
     const player = players.get(playerIdx);
     const playerDices = player.get('dices');
@@ -64,15 +66,15 @@ class GameStore extends Store {
     console.log('nextNumCell: ' + nextNumCell.get('n'));
 
     const playerDiceCntByPips = List([0, 0, 0, 0, 0, 0])
-      .map((count, index) => myDices.filter(dice => dice == index).count());
-    const otherDicesCnt = this.state.players
+      .map((count, index) => playerDices.filter(dice => dice == index).count());
+    const otherDicesCnt = players
       .delete(player.get('num'))
       .map(otherPlayer => otherPlayer.get('dices'))
       .flatten()
       .count();
     const expectedDiceCounts = Map({
-      star: otherDicesCount/6 + myDiceCounts.get(0),
-      num: otherDicesCount/3 + myDiceCounts.slice(1).max()
+      star: otherDicesCnt/6 + playerDiceCntByPips.get(0),
+      num: otherDicesCnt/3 + playerDiceCntByPips.slice(1).max()
     });
 
     // If the value is bigger, the bid become safer
@@ -87,20 +89,27 @@ class GameStore extends Store {
         curCellIdx: state.cells.indexOf(nextStarCell),
         prevPlayerIdx: playerIdx,
         curPlayerIdx: playerIdx + 1,
-      }), function() {
-        cpuPlayTurn(playerIdx + 1);
-      });
+        message: 'Player' + playerIdx + ' bid for [star dices x ' + nextStarCell.get('n') + '].',
+      }));
     } else {
       this.setState((state, props) => ({
-        curBid: nextNumCell.update('p', p => playerDiceCntByPips.slice(1).indexOf(playerDiceCntByPips.slice(1).max())),
+        curBid: nextNumCell.update('p', p => (playerDiceCntByPips.slice(1).indexOf(playerDiceCntByPips.slice(1).max()) + 1)),
         curCellIdx: state.cells.indexOf(nextNumCell),
         prevPlayerIdx: playerIdx,
         curPlayerIdx: playerIdx + 1,
-      }), function() {
-        cpuPlayTurn(playerIdx + 1);
-      });
+        message: 'Player' + playerIdx + ' bid for [' + (playerDiceCntByPips.slice(1).indexOf(playerDiceCntByPips.slice(1).max()) + 1)
+          + '(pips) dices x ' + nextNumCell.get('n') + '].',
+      }));
     }
-    console.log('Player' + player.get('num') + ' move dice(pips: ' + this.state.curBid.get('p') + ') to ' + this.state.curBidPosition);
+    if(playerIdx == 3) {
+      this.setState((state, props) => ({
+        curPlayerIdx: 0,
+        message: 'Choose your action >',
+      }));
+    } else {
+      setTimeout(function(){this.cpuPlayTurn(playerIdx + 1);}.bind(this), 3000);
+    }
+    console.log('Player' + playerIdx + ' move dice(pips: ' + this.state.curBid.get('p') + ') to ' + this.state.curCellIdx);
 
   }
 
